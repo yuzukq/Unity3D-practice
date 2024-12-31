@@ -7,6 +7,11 @@ public class PlayerController : MonoBehaviour
     public Transform Camera;
     public float PlayerSpeed;
     public float RotationSpeed;
+
+    //speed変数に三次元x,y,zの値の入れ物を用意
+    Vector3 speed = Vector3.zero;   //キャラクタの座標を格納する変数
+    Vector3 playerRote = Vector3.zero; //キャラクタの向きを格納する変数
+
     // Start is called before the first frame update
     void Start()
     {
@@ -20,44 +25,47 @@ public class PlayerController : MonoBehaviour
         Rotation();
         Camera.transform.position = transform.position;
 
-
     }
 
     void Move()
     {
-        //speed変数に三次元x,y,zの値の入れ物を用意
-        var speed = Vector3.zero;   //キャラクタの座標を格納する変数
-        var playerRote = Vector3.zero; //キャラクタの向きを格納する変数
+        speed = Vector3.zero;   //キャラクタの座標を格納する変数
+        playerRote = Vector3.zero; //キャラクタの向きを格納する変数
 
         if (Input.GetKey(KeyCode.W))
         {
-            speed.z = PlayerSpeed;  //transform(0, 0, PlayerSpeed)
-            playerRote.y = 0;   //前を向く(角度軸y=0)
+            playerRote.y = 0;   //前を向く(角度軸y=0
+            MoveSet();
         }
 
         if (Input.GetKey(KeyCode.S))
         {
-            speed.z = PlayerSpeed;
             playerRote.y = 180; //後ろ向く
+            MoveSet();
         }
 
         if (Input.GetKey(KeyCode.D))
         {
-            speed.z = PlayerSpeed;
             playerRote.y = 90;
+            MoveSet();
         }
 
         if (Input.GetKey(KeyCode.A))
         {
-            speed.z = PlayerSpeed;
             playerRote.y = -90;
+            MoveSet();
         }
-        //プレイやの向いてる方向= カメラの向いてる方向　＋　プレイやの向き
-        transform.eulerAngles = Camera.transform.eulerAngles + playerRote;
+
         transform.Translate(speed);
 
     }
 
+    void MoveSet()
+    {
+        speed.z = PlayerSpeed;  //transform(0, 0, PlayerSpeed)
+                                //プレイやの向いてる方向= カメラの向いてる方向　＋　プレイやの向き
+        transform.eulerAngles = Camera.transform.eulerAngles + playerRote;
+    }
 
     void Rotation()
     {
