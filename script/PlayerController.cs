@@ -12,6 +12,9 @@ public class PlayerController : MonoBehaviour
     Vector3 speed = Vector3.zero;   //キャラクタの座標を格納する変数
     Vector3 playerRote = Vector3.zero; //キャラクタの向きを格納する変数
 
+    public Animator PlayerAnimator; 
+    bool isEmote; //アニメーションのフラグ
+
     // Start is called before the first frame update
     void Start()
     {
@@ -24,16 +27,17 @@ public class PlayerController : MonoBehaviour
         Move();
         Rotation();
         Camera.transform.position = transform.position;
-
+        emote();
     }
 
     void Move()
     {
         speed = Vector3.zero;   //キャラクタの座標を格納する変数
         playerRote = Vector3.zero; //キャラクタの向きを格納する変数
-
+        
         if (Input.GetKey(KeyCode.W))
         {
+            isEmote = false; //動いたらアニメーションのフラグをオフ
             playerRote.y = 0;   //前を向く(角度軸y=0
             MoveSet();
         }
@@ -57,6 +61,7 @@ public class PlayerController : MonoBehaviour
         }
 
         transform.Translate(speed);
+        
 
     }
 
@@ -65,6 +70,17 @@ public class PlayerController : MonoBehaviour
         speed.z = PlayerSpeed;  //transform(0, 0, PlayerSpeed)
                                 //プレイやの向いてる方向= カメラの向いてる方向　＋　プレイやの向き
         transform.eulerAngles = Camera.transform.eulerAngles + playerRote;
+    }
+
+    void emote()
+    {
+        
+        if (Input.GetKeyDown(KeyCode.E)) //Eキーを押したら
+        {
+            isEmote = true; //アニメーションのフラグをオン
+        }
+        
+        PlayerAnimator.SetBool("emote", isEmote); //アニメータのパラメータに反映
     }
 
     void Rotation()
