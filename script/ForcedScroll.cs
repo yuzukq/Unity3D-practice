@@ -2,17 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class ForcedScroll : MonoBehaviour
 {
     public Transform Camera;
     public float PlayerSpeed = 0.05f;
     public float RotationSpeed = 0.5f;
+    public float jumpforce = 5;
+
 
     //speed変数に三次元x,y,zの値の入れ物を用意
     Vector3 speed = Vector3.zero;   //キャラクタの座標を格納する変数
     Vector3 playerRote = Vector3.zero; //キャラクタの向きを格納する変数
 
-    public Animator PlayerAnimator;
+    public Animator PlayerAnimator; 
     bool isEmote; //アニメーションのフラグ
 
     // Start is called before the first frame update
@@ -24,17 +26,23 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        Scroll();
         Move();
         Rotation();
         Camera.transform.position = transform.position;
         emote();
     }
 
+    void Scroll()
+    {
+        transform.position += new Vector3(0, 0, 0.05f);
+    }
+
     void Move()
     {
         speed = Vector3.zero;   //キャラクタの座標を格納する変数
         playerRote = Vector3.zero; //キャラクタの向きを格納する変数
-
+        
         if (Input.GetKey(KeyCode.W))
         {
             isEmote = false; //動いたらアニメーションのフラグをオフ
@@ -60,8 +68,13 @@ public class PlayerController : MonoBehaviour
             MoveSet();
         }
 
-        transform.Translate(speed);
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            speed.y = jumpforce;
+        }
 
+        transform.Translate(speed);
+        
 
     }
 
@@ -69,17 +82,18 @@ public class PlayerController : MonoBehaviour
     {
         speed.z = PlayerSpeed;  //transform(0, 0, PlayerSpeed)
                                 //プレイやの向いてる方向= カメラの向いてる方向　＋　プレイやの向き
-        transform.eulerAngles = Camera.transform.eulerAngles + playerRote;
+        //transform.eulerAngles = Camera.transform.eulerAngles + playerRote;
+        transform.eulerAngles = playerRote;
     }
 
     void emote()
     {
-
+        
         if (Input.GetKeyDown(KeyCode.E)) //Eキーを押したら
         {
             isEmote = true; //アニメーションのフラグをオン
         }
-
+        
         PlayerAnimator.SetBool("emote", isEmote); //アニメータのパラメータに反映
     }
 
